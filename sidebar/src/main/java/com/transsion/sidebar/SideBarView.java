@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,6 +82,13 @@ public class SideBarView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (event.getX() < getWidth() - textSize * 3) {
+            if (touchX != 0 || touchY != 0) {
+                touchY = touchX = 0;
+                invalidate();
+            }
+            return super.onTouchEvent(event);
+        }
         touchX = event.getX();
         touchY = event.getY();
         int currentIndex = ((int) touchY) / textHeight;
@@ -98,9 +106,6 @@ public class SideBarView extends View {
                 downX = touchX;
                 downY = touchY;
                 scrolling = false;
-                if (downX < getWidth() - textSize * 3) {
-                    return super.onTouchEvent(event);
-                }
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (Math.abs(touchY - downY) > mTouchSlop) {
@@ -255,4 +260,3 @@ public class SideBarView extends View {
         public void onSelectItem(int position, String title);
     }
 }
-
